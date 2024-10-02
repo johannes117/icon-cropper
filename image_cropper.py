@@ -1,22 +1,14 @@
 import streamlit as st
 from PIL import Image
 import io
-import cairosvg
-
-def convert_svg_to_png(svg_file):
-    png_data = cairosvg.svg2png(file_obj=svg_file)
-    return Image.open(io.BytesIO(png_data))
 
 def main():
     st.title("iOS App Icon Cropper")
 
-    uploaded_file = st.file_uploader("Upload your image (PNG, JPEG, or SVG)", type=["png", "jpg", "jpeg", "svg"])
+    uploaded_file = st.file_uploader("Upload your image (PNG or JPEG)", type=["png", "jpg", "jpeg"])
 
     if uploaded_file:
-        if uploaded_file.type == "image/svg+xml":
-            image = convert_svg_to_png(uploaded_file)
-        else:
-            image = Image.open(uploaded_file)
+        image = Image.open(uploaded_file)
         
         original_width, original_height = image.size
 
@@ -51,7 +43,7 @@ def main():
                 mime="image/png"
             )
     else:
-        st.info("Please upload a PNG, JPEG, or SVG image to get started.")
+        st.info("Please upload a PNG or JPEG image to get started.")
 
 if __name__ == "__main__":
     main()
