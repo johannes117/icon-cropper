@@ -26,22 +26,25 @@ def main():
 
         cropped_image = image.crop((left, top, right, bottom))
 
-        # Always resize to 1024x1024
-        resized_image = cropped_image.resize((1024, 1024), Image.LANCZOS)
+        # Add output size selection
+        output_size = st.number_input("Output image size (width and height in pixels)", min_value=16, max_value=4096, value=1024, step=1)
 
-        st.write("Cropped and Resized Image Preview:")
-        st.image(resized_image, caption="Cropped and Resized Image (1024x1024)", use_column_width=True)
+        # Resize to the selected output size
+        resized_image = cropped_image.resize((output_size, output_size), Image.LANCZOS)
 
-        if st.button("Download Cropped Image"):
-            buf = io.BytesIO()
-            resized_image.save(buf, format="PNG")
-            byte_im = buf.getvalue()
-            st.download_button(
-                label="Download Cropped Image",
-                data=byte_im,
-                file_name="cropped_icon_1024x1024.png",
-                mime="image/png"
-            )
+        st.write(f"Cropped and Resized Image Preview ({output_size}x{output_size}):")
+        st.image(resized_image, caption=f"Cropped and Resized Image ({output_size}x{output_size})", use_column_width=True)
+
+        buf = io.BytesIO()
+        resized_image.save(buf, format="PNG")
+        byte_im = buf.getvalue()
+
+        st.download_button(
+            label="Download Cropped Image",
+            data=byte_im,
+            file_name=f"cropped_icon_{output_size}x{output_size}.png",
+            mime="image/png"
+        )
     else:
         st.info("Please upload a PNG or JPEG image to get started.")
 
